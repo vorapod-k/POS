@@ -1,0 +1,982 @@
+
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login | ตำกระฉูด POS</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg: #090909;
+            --panel: #111111;
+            --panel-light: #181818;
+            --red: #e32636;
+            --red-dark: #a80f20;
+            --text: #f5f5f5;
+            --muted: #858585;
+            --border: rgba(255,255,255,.09);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            min-height: 100vh;
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Inter', 'Kanit', sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 30px;
+            overflow-x: hidden;
+        }
+
+        .login-container {
+            width: 100%;
+            max-width: 1120px;
+            min-height: 660px;
+            display: grid;
+            grid-template-columns: 1.05fr .95fr;
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: 0 30px 100px rgba(0,0,0,.65);
+        }
+
+        /* LEFT PANEL */
+
+        .brand-panel {
+            position: relative;
+            padding: 46px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            overflow: hidden;
+            background:
+                radial-gradient(ellipse at 15% 80%, rgba(227,38,54,.20), transparent 45%),
+                linear-gradient(145deg, #191919, #0c0c0c 75%);
+        }
+
+        .brand-panel::before {
+            content: "";
+            position: absolute;
+            width: 430px;
+            height: 430px;
+            right: -180px;
+            top: 100px;
+            border: 1px solid rgba(227,38,54,.18);
+            border-radius: 50%;
+            box-shadow:
+                0 0 0 45px rgba(227,38,54,.025),
+                0 0 0 90px rgba(227,38,54,.025);
+        }
+
+        .brand-panel::after {
+            content: "";
+            position: absolute;
+            width: 250px;
+            height: 250px;
+            right: -90px;
+            top: 190px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(227,38,54,.18), transparent 70%);
+        }
+
+        .brand-header,
+        .brand-content,
+        .brand-footer {
+            position: relative;
+            z-index: 1;
+        }
+
+        .brand-header {
+            display: flex;
+            align-items: center;
+            gap: 13px;
+        }
+
+        .brand-logo {
+            width: 48px;
+            height: 48px;
+            flex-shrink: 0;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            background: #ffffff;
+            border: 1px solid rgba(255, 255, 255, .08);
+            box-shadow: 0 8px 25px rgba(227, 38, 54, .20);
+        }
+
+        .brand-logo img {
+            display: block;
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .brand-name {
+            font-family: 'Kanit', sans-serif;
+            font-size: 23px;
+            font-weight: 600;
+            letter-spacing: .3px;
+        }
+
+        .brand-subtitle {
+            margin-top: 1px;
+            font-size: 10px;
+            color: #999;
+            letter-spacing: 2.5px;
+        }
+
+        .brand-content {
+            margin: 60px 0;
+        }
+
+        .eyebrow {
+            color: #ff5b69;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 3px;
+            margin-bottom: 23px;
+        }
+
+        .brand-content h1 {
+            font-family: 'Kanit', sans-serif;
+            font-size: clamp(40px, 5vw, 59px);
+            font-weight: 600;
+            line-height: 1.3;
+            letter-spacing: -.5px;
+        }
+
+        .brand-content h1 span {
+            color: var(--red);
+        }
+
+        .brand-description {
+            margin-top: 22px;
+            max-width: 340px;
+            color: #9c9c9c;
+            font-size: 14px;
+            line-height: 1.9;
+        }
+
+        .brand-line {
+            width: 55px;
+            height: 4px;
+            margin-top: 30px;
+            background: var(--red);
+            border-radius: 5px;
+        }
+
+        .brand-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            font-size: 11px;
+            color: #777;
+        }
+
+        .brand-footer .version {
+            border: 1px solid #333;
+            padding: 7px 11px;
+            border-radius: 7px;
+            color: #aaa;
+        }
+
+        /* RIGHT PANEL */
+
+        .form-panel {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 55px 52px;
+            background: #101010;
+        }
+
+        .login-form {
+            width: 100%;
+            max-width: 360px;
+        }
+
+        .mobile-brand {
+            display: none;
+        }
+
+        .form-heading {
+            margin-bottom: 35px;
+        }
+
+        .form-heading .small-title {
+            color: #f04a58;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            margin-bottom: 13px;
+        }
+
+        .form-heading h2 {
+            font-family: 'Kanit', sans-serif;
+            font-size: 31px;
+            font-weight: 500;
+            margin-bottom: 7px;
+        }
+
+        .form-heading p {
+            color: var(--muted);
+            font-size: 13px;
+            line-height: 1.8;
+        }
+
+        .form-group {
+            margin-bottom: 22px;
+        }
+
+        .form-group label {
+            display: block;
+            font-family: 'Kanit', sans-serif;
+            font-size: 13px;
+            font-weight: 400;
+            color: #d8d8d8;
+            margin-bottom: 10px;
+        }
+
+        .input-wrapper {
+            height: 53px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 0 15px;
+            background: #171717;
+            border: 1px solid #303030;
+            border-radius: 10px;
+            transition: border-color .2s, box-shadow .2s;
+        }
+
+        .input-wrapper:focus-within {
+            border-color: var(--red);
+            box-shadow: 0 0 0 3px rgba(227,38,54,.10);
+        }
+
+        .input-wrapper > i {
+            width: 17px;
+            text-align: center;
+            color: #777;
+            font-size: 15px;
+        }
+
+        .input-wrapper input {
+            flex: 1;
+            min-width: 0;
+            height: 100%;
+            background: transparent;
+            border: none;
+            outline: none;
+            color: white;
+            font-family: 'Inter', 'Kanit', sans-serif;
+            font-size: 13px;
+        }
+
+        .input-wrapper input::placeholder {
+            color: #626262;
+        }
+
+        .toggle-password {
+            cursor: pointer;
+            color: #777;
+            background: transparent;
+            border: none;
+            padding: 7px;
+            font-size: 14px;
+        }
+
+        .toggle-password:hover {
+            color: white;
+        }
+
+        .form-options {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            margin: 2px 0 27px;
+            font-size: 12px;
+        }
+
+        .remember {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #aaa;
+            cursor: pointer;
+        }
+
+        .remember input {
+            width: 15px;
+            height: 15px;
+            accent-color: var(--red);
+            cursor: pointer;
+        }
+
+        .forgot-link {
+            color: #e95a66;
+            text-decoration: none;
+        }
+
+        .forgot-link:hover {
+            color: #ff929a;
+        }
+
+        .login-button {
+            position: relative;
+            width: 100%;
+            height: 54px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            color: white;
+            background: linear-gradient(100deg, #d91f32, #a90d20);
+            border: 1px solid rgba(255,255,255,.08);
+            border-radius: 10px;
+            font-family: 'Kanit', sans-serif;
+            font-size: 15px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: transform .2s, box-shadow .2s, filter .2s;
+            box-shadow: 0 8px 22px rgba(227,38,54,.16);
+        }
+
+        .login-button:hover {
+            filter: brightness(1.12);
+            transform: translateY(-1px);
+            box-shadow: 0 12px 28px rgba(227,38,54,.25);
+        }
+
+        .login-button:active {
+            transform: translateY(0);
+        }
+
+        .divider {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin: 29px 0 24px;
+            color: #626262;
+            font-size: 11px;
+        }
+
+        .divider::before,
+        .divider::after {
+            content: "";
+            flex: 1;
+            height: 1px;
+            background: #292929;
+        }
+
+        .security-note {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 15px;
+            border: 1px solid #292929;
+            border-radius: 10px;
+            background: rgba(255,255,255,.015);
+        }
+
+        .security-note i {
+            color: #d83b49;
+            margin-top: 3px;
+            font-size: 15px;
+        }
+
+        .security-note strong {
+            display: block;
+            font-family: 'Kanit', sans-serif;
+            font-size: 12px;
+            font-weight: 400;
+            margin-bottom: 4px;
+        }
+
+        .security-note p {
+            font-size: 10px;
+            line-height: 1.7;
+            color: #777;
+        }
+
+        .form-footer {
+            margin-top: 35px;
+            padding-top: 20px;
+            border-top: 1px solid #292929;
+            text-align: center;
+            color: #646464;
+            font-size: 10px;
+            line-height: 1.8;
+        }
+
+        .form-footer span {
+            color: #aaa;
+        }
+
+        .message {
+            display: none;
+            margin-top: 16px;
+            padding: 12px 14px;
+            border-radius: 8px;
+            font-size: 12px;
+            line-height: 1.7;
+        }
+
+        .message.error {
+            display: block;
+            color: #ff9aa3;
+            background: rgba(227,38,54,.09);
+            border: 1px solid rgba(227,38,54,.22);
+        }
+
+        /* RESPONSIVE */
+
+        @media (max-width: 850px) {
+            body {
+                padding: 20px;
+            }
+
+            .login-container {
+                max-width: 500px;
+                min-height: auto;
+                grid-template-columns: 1fr;
+            }
+
+            .brand-panel {
+                display: none;
+            }
+
+            .form-panel {
+                padding: 45px 35px;
+            }
+
+            .mobile-brand {
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                margin-bottom: 40px;
+            }
+
+            .mobile-brand .brand-name {
+                font-size: 21px;
+            }
+
+            .mobile-brand .brand-subtitle {
+                font-size: 9px;
+            }
+
+            .form-footer {
+                margin-top: 28px;
+            }
+        }
+
+        @media (max-width: 420px) {
+            body {
+                padding: 12px;
+            }
+
+            .login-container {
+                border-radius: 18px;
+            }
+
+            .form-panel {
+                padding: 30px 22px;
+            }
+
+            .form-heading h2 {
+                font-size: 28px;
+            }
+
+            .form-heading {
+                margin-bottom: 28px;
+            }
+
+            .mobile-brand {
+                margin-bottom: 32px;
+            }
+        }
+
+        /* ========================================
+        THEME OVERRIDE: PREMIUM WHITE & ORANGE
+        Restaurant: ตำกระฉูด
+        ======================================== */
+
+        :root {
+            --bg: #F7F7F8;
+            --panel: #FFFFFF;
+            --panel-light: #FFF5EB;
+            --red: #F58220;
+            --red-dark: #E66A0A;
+            --text: #262626;
+            --muted: #777777;
+            --border: #EAEAEA;
+        }
+
+        /* Main Background */
+
+        body {
+            background:
+                radial-gradient(
+                    circle at 10% 10%,
+                    rgba(245, 130, 32, .07),
+                    transparent 35%
+                ),
+                #F7F7F8;
+            color: var(--text);
+        }
+
+        /* Main Container */
+
+        .login-container {
+            background: #FFFFFF;
+            border: 1px solid #EEEEEE;
+            box-shadow: 0 24px 80px rgba(35, 35, 35, .10);
+        }
+
+        /* Left Brand Panel */
+
+        .brand-panel {
+            background:
+                radial-gradient(
+                    ellipse at 15% 80%,
+                    rgba(245, 130, 32, .14),
+                    transparent 45%
+                ),
+                linear-gradient(
+                    145deg,
+                    #FFF9F3,
+                    #FFF0E0 75%
+                );
+        }
+
+        .brand-panel::before {
+            border-color: rgba(245, 130, 32, .18);
+            box-shadow:
+                0 0 0 45px rgba(245, 130, 32, .035),
+                0 0 0 90px rgba(245, 130, 32, .025);
+        }
+
+        .brand-panel::after {
+            background: radial-gradient(
+                circle,
+                rgba(245, 130, 32, .15),
+                transparent 70%
+            );
+        }
+
+        /* Brand Logo */
+
+        .brand-logo {
+            background: #FFFFFF;
+            border: 1px solid rgba(245, 130, 32, .15);
+            box-shadow: 0 8px 25px rgba(245, 130, 32, .12);
+        }
+
+        /* Brand Text */
+
+        .brand-name {
+            color: #262626;
+        }
+
+        .brand-subtitle {
+            color: #888888;
+        }
+
+        .eyebrow {
+            color: #E66A0A;
+        }
+
+        .brand-content h1 {
+            color: #262626;
+        }
+
+        .brand-content h1 span {
+            color: #F58220;
+        }
+
+        .brand-description {
+            color: #6F6F6F;
+        }
+
+        .brand-line {
+            background: linear-gradient(
+                90deg,
+                #F58220,
+                #FFB366
+            );
+        }
+
+        .brand-footer {
+            color: #888888;
+        }
+
+        .brand-footer .version {
+            color: #777777;
+            border-color: #E8D9CA;
+            background: rgba(255, 255, 255, .65);
+        }
+
+        /* Right Login Panel */
+
+        .form-panel {
+            background: #FFFFFF;
+        }
+
+        .form-heading .small-title {
+            color: #E66A0A;
+        }
+
+        .form-heading h2 {
+            color: #262626;
+        }
+
+        .form-heading p {
+            color: #777777;
+        }
+
+        /* Form Labels */
+
+        .form-group label {
+            color: #444444;
+        }
+
+        /* Input Fields */
+
+        .input-wrapper {
+            background: #FFFFFF;
+            border: 1px solid #DDDDDD;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, .015);
+        }
+
+        .input-wrapper:focus-within {
+            border-color: #F58220;
+            box-shadow: 0 0 0 3px rgba(245, 130, 32, .12);
+        }
+
+        .input-wrapper > i {
+            color: #999999;
+        }
+
+        .input-wrapper input {
+            color: #262626;
+        }
+
+        .input-wrapper input::placeholder {
+            color: #AAAAAA;
+        }
+
+        .toggle-password {
+            color: #999999;
+        }
+
+        .toggle-password:hover {
+            color: #E66A0A;
+        }
+
+        /* Remember Me & Forgot Password */
+
+        .remember {
+            color: #666666;
+        }
+
+        .remember input {
+            accent-color: #F58220;
+        }
+
+        .forgot-link {
+            color: #E66A0A;
+        }
+
+        .forgot-link:hover {
+            color: #C95600;
+        }
+
+        /* Login Button */
+
+        .login-button {
+            color: #FFFFFF;
+            background: linear-gradient(
+                100deg,
+                #FF9B42,
+                #F58220,
+                #E66A0A
+            );
+            border: 1px solid rgba(230, 106, 10, .15);
+            box-shadow: 0 8px 22px rgba(245, 130, 32, .20);
+        }
+
+        .login-button:hover {
+            filter: brightness(1.04);
+            box-shadow: 0 12px 28px rgba(245, 130, 32, .28);
+        }
+
+        /* Divider */
+
+        .divider {
+            color: #999999;
+        }
+
+        .divider::before,
+        .divider::after {
+            background: #EEEEEE;
+        }
+
+        /* Security Information */
+
+        .security-note {
+            background: #FFFAF5;
+            border: 1px solid #F3E5D7;
+        }
+
+        .security-note i {
+            color: #F58220;
+        }
+
+        .security-note strong {
+            color: #444444;
+        }
+
+        .security-note p {
+            color: #777777;
+        }
+
+        /* Footer */
+
+        .form-footer {
+            border-top: 1px solid #EEEEEE;
+            color: #999999;
+        }
+
+        .form-footer span {
+            color: #555555;
+        }
+
+        /* Error Message */
+
+        .message.error {
+            color: #C2410C;
+            background: #FFF7ED;
+            border: 1px solid #FED7AA;
+        }
+
+        /* Mobile Brand */
+
+        .mobile-brand .brand-name {
+            color: #262626;
+        }
+
+        .mobile-brand .brand-subtitle {
+            color: #888888;
+        }
+
+    </style>
+</head>
+
+<body>
+
+    <main class="login-container">
+
+        <!-- LEFT: BRANDING -->
+        <section class="brand-panel">
+
+            <div class="brand-header">
+                <div class="brand-logo">
+                    <img src="images/logo.png" alt="ตำกระฉูด">
+                </div>
+
+                <div>
+                    <div class="brand-name">ตำกระฉูด</div>
+                    <div class="brand-subtitle">RESTAURANT MANAGEMENT</div>
+                </div>
+            </div>
+
+            <div class="brand-content">
+                <div class="eyebrow">SMART RESTAURANT POS</div>
+
+                <h1>
+                    รสชาติจัดจ้าน<br>
+                    <span>จัดการอย่างมืออาชีพ</span>
+                </h1>
+
+                <p class="brand-description">
+                    ยกระดับการจัดการร้านอาหารของคุณ
+                    ด้วยระบบ POS ที่ออกแบบมาเพื่อความรวดเร็ว
+                    ความแม่นยำ และประสบการณ์ที่ดีกว่า
+                </p>
+
+                <div class="brand-line"></div>
+            </div>
+
+            <div class="brand-footer">
+                <span>BUILT FOR BETTER SERVICE</span>
+                <span class="version">POS SYSTEM · V1.0</span>
+            </div>
+
+        </section>
+
+        <!-- RIGHT: LOGIN FORM -->
+        <section class="form-panel">
+
+            <div class="login-form">
+
+                <div class="mobile-brand">
+                    <div class="brand-logo">
+                        <img src="images/logo.png" alt="ตำกระฉูด">
+                    </div>
+
+                    <div>
+                        <div class="brand-name">ตำกระฉูด</div>
+                        <div class="brand-subtitle">RESTAURANT POS</div>
+                    </div>
+                </div>
+
+                <div class="form-heading">
+                    <div class="small-title">WELCOME BACK</div>
+                    <h2>เข้าสู่ระบบ</h2>
+                    <p>กรุณาเข้าสู่ระบบเพื่อเริ่มต้นใช้งาน POS</p>
+                </div>
+
+                <form id="loginForm">
+
+                    <div class="form-group">
+                        <label for="username">ชื่อผู้ใช้งาน</label>
+
+                        <div class="input-wrapper">
+                            <i class="fa-regular fa-user"></i>
+                            <input
+                                type="text"
+                                id="username"
+                                name="username"
+                                placeholder="กรอกชื่อผู้ใช้งาน"
+                                autocomplete="username"
+                                required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="password">รหัสผ่าน</label>
+
+                        <div class="input-wrapper">
+                            <i class="fa-solid fa-lock"></i>
+                            <input
+                                type="password"
+                                id="password"
+                                name="password"
+                                placeholder="กรอกรหัสผ่าน"
+                                autocomplete="current-password"
+                                required>
+
+                            <button
+                                type="button"
+                                class="toggle-password"
+                                id="togglePassword"
+                                aria-label="แสดงรหัสผ่าน">
+                                <i class="fa-regular fa-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="form-options">
+                        <label class="remember">
+                            <input type="checkbox" id="remember">
+                            <span>จดจำฉันไว้</span>
+                        </label>
+
+                        <a href="#" class="forgot-link" id="forgotPassword">
+                            ลืมรหัสผ่าน?
+                        </a>
+                    </div>
+
+                    <button type="submit" class="login-button">
+                        <span>เข้าสู่ระบบ</span>
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+
+                    <div id="message" class="message" role="alert"></div>
+
+                </form>
+
+                <div class="divider">SECURE ACCESS</div>
+
+                <div class="security-note">
+                    <i class="fa-solid fa-shield-halved"></i>
+
+                    <div>
+                        <strong>ระบบรักษาความปลอดภัย</strong>
+                        <p>
+                            กรุณาใช้บัญชีผู้ใช้งานของคุณเอง
+                            และออกจากระบบทุกครั้งหลังใช้งานเสร็จ
+                        </p>
+                    </div>
+                </div>
+
+                <div class="form-footer">
+                    <span>ตำกระฉูด POS</span> · Restaurant Management System
+                    <br>
+                    © 2026 All Rights Reserved.
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+    <script>
+        const passwordInput = document.getElementById('password');
+        const togglePassword = document.getElementById('togglePassword');
+        const loginForm = document.getElementById('loginForm');
+        const message = document.getElementById('message');
+
+        // Show / Hide Password
+        togglePassword.addEventListener('click', function () {
+            const isPassword = passwordInput.type === 'password';
+
+            passwordInput.type = isPassword ? 'text' : 'password';
+
+            this.innerHTML = isPassword
+                ? '<i class="fa-regular fa-eye-slash"></i>'
+                : '<i class="fa-regular fa-eye"></i>';
+
+            this.setAttribute(
+                'aria-label',
+                isPassword ? 'ซ่อนรหัสผ่าน' : 'แสดงรหัสผ่าน'
+            );
+        });
+
+        // Prototype: Navigate to Table Management
+        loginForm.addEventListener('submit', function (event) {
+            event.preventDefault();
+
+            window.location.href = 'table-management.html';
+        });
+
+        // Demo forgot-password interaction
+        document.getElementById('forgotPassword')
+            .addEventListener('click', function (event) {
+                event.preventDefault();
+
+                message.className = 'message error';
+                message.textContent =
+                    'กรุณาติดต่อผู้ดูแลระบบเพื่อรีเซ็ตรหัสผ่าน';
+            });
+    </script>
+
+</body>
+</html>

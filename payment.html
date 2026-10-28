@@ -1,0 +1,1497 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ชำระเงิน | ตำกระฉูด POS</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+    <style>
+        :root {
+            --primary: #F58220;
+            --primary-dark: #E66A0A;
+            --primary-light: #FFF1E3;
+            --bg: #F7F7F8;
+            --surface: #FFFFFF;
+            --border: #EAEAEA;
+            --text: #262626;
+            --muted: #888888;
+            --green: #159968;
+            --red: #D94820;
+            --radius: 16px;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Kanit', sans-serif;
+            font-size: 14px;
+        }
+
+        button, input {
+            font: inherit;
+        }
+
+        button {
+            cursor: pointer;
+        }
+
+        .topbar {
+            height: 72px;
+            padding: 0 32px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #fff;
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .brand-logo {
+            width: 42px;
+            height: 42px;
+            object-fit: contain;
+            border-radius: 12px;
+            background: var(--primary-light);
+            padding: 4px;
+        }
+
+        .brand-name {
+            font-size: 19px;
+            font-weight: 600;
+        }
+
+        .brand-name span {
+            color: var(--primary);
+        }
+
+        .brand-subtitle {
+            color: var(--muted);
+            font-size: 11px;
+            margin-top: -3px;
+        }
+
+        .topbar-right {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            color: #666;
+        }
+
+        .icon-btn {
+            width: 40px;
+            height: 40px;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            background: #fff;
+            color: #555;
+        }
+
+        .icon-btn:hover {
+            background: var(--primary-light);
+            color: var(--primary-dark);
+        }
+
+        .page {
+            max-width: 1440px;
+            margin: 0 auto;
+            padding: 28px 32px 40px;
+        }
+
+        .page-heading {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .eyebrow {
+            color: var(--primary-dark);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        h1 {
+            font-size: 28px;
+            font-weight: 600;
+            margin: 4px 0;
+        }
+
+        .description {
+            color: var(--muted);
+            margin: 0;
+        }
+
+        .table-badge {
+            background: var(--primary-light);
+            color: var(--primary-dark);
+            padding: 10px 16px;
+            border: 1px solid #FFE0C2;
+            border-radius: 12px;
+            font-weight: 500;
+            white-space: nowrap;
+        }
+
+        .table-badge i {
+            margin-right: 6px;
+        }
+
+        .layout {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) 390px;
+            gap: 22px;
+            align-items: start;
+        }
+
+        .panel {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            box-shadow: 0 4px 18px rgba(0,0,0,.025);
+            overflow: hidden;
+        }
+
+        .panel-header {
+            padding: 20px 22px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .panel-title {
+            font-size: 17px;
+            font-weight: 600;
+        }
+
+        .panel-subtitle {
+            color: var(--muted);
+            font-size: 12px;
+            margin-top: 3px;
+        }
+
+        .panel-body {
+            padding: 22px;
+        }
+
+        .section-label {
+            font-size: 13px;
+            font-weight: 500;
+            margin-bottom: 12px;
+        }
+
+        .payment-methods {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 14px;
+            margin-bottom: 28px;
+        }
+
+        .method {
+            min-height: 120px;
+            text-align: left;
+            padding: 18px;
+            border: 1px solid #E5E5E5;
+            background: #fff;
+            border-radius: 14px;
+            transition: .15s ease;
+            position: relative;
+        }
+
+        .method:hover {
+            border-color: #F5B477;
+            background: #FFFAF5;
+        }
+
+        .method.active {
+            border: 2px solid var(--primary);
+            background: #FFF8F0;
+            padding: 17px;
+        }
+
+        .method-icon {
+            width: 42px;
+            height: 42px;
+            border-radius: 12px;
+            display: grid;
+            place-items: center;
+            background: var(--primary-light);
+            color: var(--primary-dark);
+            font-size: 19px;
+            margin-bottom: 12px;
+        }
+
+        .method-title {
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .method-desc {
+            color: var(--muted);
+            font-size: 11px;
+            margin-top: 3px;
+        }
+
+        .method-check {
+            position: absolute;
+            top: 14px;
+            right: 14px;
+            color: var(--primary);
+            display: none;
+        }
+
+        .method.active .method-check {
+            display: block;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 13px;
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
+
+        .money-input-wrap {
+            display: flex;
+            align-items: center;
+            border: 1px solid #E5E5E5;
+            border-radius: 12px;
+            padding: 0 16px;
+            height: 58px;
+            background: #fff;
+        }
+
+        .money-input-wrap:focus-within {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(245,130,32,.10);
+        }
+
+        .currency {
+            color: var(--muted);
+            font-size: 16px;
+            margin-right: 12px;
+        }
+
+        .money-input {
+            width: 100%;
+            border: 0;
+            outline: 0;
+            background: transparent;
+            color: var(--text);
+            font-size: 25px;
+            font-weight: 600;
+            text-align: right;
+        }
+
+        .quick-amounts {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        .quick-btn {
+            padding: 9px 14px;
+            border: 1px solid #E5E5E5;
+            background: #fff;
+            color: #555;
+            border-radius: 9px;
+            font-size: 12px;
+        }
+
+        .quick-btn:hover {
+            color: var(--primary-dark);
+            border-color: #F5B477;
+            background: var(--primary-light);
+        }
+
+        .quick-btn.exact {
+            color: var(--primary-dark);
+            border-color: #F5B477;
+            background: var(--primary-light);
+        }
+
+        .change-box {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            background: #F0FAF5;
+            border: 1px solid #D2F0E0;
+            border-radius: 12px;
+            padding: 16px 18px;
+            margin-top: 22px;
+        }
+
+        .change-label {
+            color: #487561;
+            font-size: 13px;
+        }
+
+        .change-value {
+            font-size: 24px;
+            font-weight: 600;
+            color: var(--green);
+        }
+
+        .change-box.insufficient {
+            background: #FFF5F2;
+            border-color: #FFD9CC;
+        }
+
+        .change-box.insufficient .change-label,
+        .change-box.insufficient .change-value {
+            color: var(--red);
+        }
+
+        .transfer-panel {
+            display: none;
+            margin-top: 18px;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 18px;
+            background: #FCFCFC;
+        }
+
+        .transfer-panel.show {
+            display: block;
+        }
+
+        .qr-placeholder {
+            width: 160px;
+            height: 160px;
+            margin: 14px auto;
+            border: 1px dashed #D5D5D5;
+            background: #fff;
+            border-radius: 12px;
+            display: grid;
+            place-items: center;
+            text-align: center;
+            color: #888;
+            padding: 14px;
+        }
+
+        .qr-placeholder i {
+            display: block;
+            font-size: 36px;
+            color: var(--primary);
+            margin-bottom: 8px;
+        }
+
+        .transfer-note {
+            font-size: 12px;
+            color: var(--muted);
+            text-align: center;
+        }
+
+        .order-summary-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .order-number {
+            color: var(--muted);
+            font-size: 11px;
+        }
+
+        .items {
+            padding: 6px 22px;
+            max-height: 360px;
+            overflow-y: auto;
+        }
+
+        .item {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 14px 0;
+            border-bottom: 1px solid #F0F0F0;
+        }
+
+        .item:last-child {
+            border-bottom: 0;
+        }
+
+        .item-name {
+            font-weight: 500;
+        }
+
+        .item-meta {
+            color: var(--muted);
+            font-size: 11px;
+            margin-top: 4px;
+        }
+
+        .item-price {
+            font-weight: 500;
+            white-space: nowrap;
+        }
+
+        .summary {
+            padding: 18px 22px 22px;
+            background: #FFFCF9;
+            border-top: 1px solid var(--border);
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            margin: 10px 0;
+            color: #777;
+            font-size: 13px;
+        }
+
+        .summary-row span:last-child {
+            color: #333;
+        }
+
+        .summary-row.total {
+            border-top: 1px solid #EAEAEA;
+            padding-top: 16px;
+            margin-top: 16px;
+            align-items: center;
+        }
+
+        .summary-row.total span:first-child {
+            font-size: 15px;
+            color: #262626;
+            font-weight: 500;
+        }
+
+        .summary-row.total span:last-child {
+            font-size: 28px;
+            color: var(--primary-dark);
+            font-weight: 600;
+        }
+
+        .footer-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 22px;
+        }
+
+        .btn {
+            min-height: 48px;
+            padding: 12px 18px;
+            border-radius: 11px;
+            border: 1px solid transparent;
+            font-weight: 500;
+            transition: .15s ease;
+        }
+
+        .btn-secondary {
+            background: #fff;
+            border-color: #E5E5E5;
+            color: #555;
+        }
+
+        .btn-secondary:hover {
+            background: #F7F7F7;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #F99A3D, #F58220);
+            color: #fff;
+            box-shadow: 0 5px 15px rgba(245,130,32,.18);
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            background: linear-gradient(135deg, #F58220, #E66A0A);
+        }
+
+        .btn-primary:disabled {
+            opacity: .45;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        .footer-actions .btn {
+            flex: 1;
+        }
+
+        .security-note {
+            color: #999;
+            font-size: 11px;
+            text-align: center;
+            margin-top: 16px;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            left: 50%;
+            transform: translate(-50%, 20px);
+            background: #EDFAF3;
+            color: #176B49;
+            border: 1px solid #B8E8D0;
+            border-radius: 12px;
+            padding: 14px 20px;
+            box-shadow: 0 12px 35px rgba(0,0,0,.1);
+            opacity: 0;
+            pointer-events: none;
+            transition: .25s ease;
+            z-index: 100;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translate(-50%, 0);
+        }
+
+        .toast.error {
+            color: var(--red);
+            background: #FFF5F2;
+            border-color: #FFD9CC;
+        }
+
+        .empty-state {
+            padding: 45px 20px;
+            text-align: center;
+            color: var(--muted);
+        }
+
+        .empty-state i {
+            font-size: 32px;
+            color: #D5D5D5;
+            margin-bottom: 12px;
+        }
+
+        /* Payment Confirmation Dialog */
+        .payment-dialog-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(38, 38, 38, 0.48);
+            backdrop-filter: blur(4px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity .2s ease, visibility .2s ease;
+        }
+
+        .payment-dialog-overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .payment-dialog {
+            width: 100%;
+            max-width: 440px;
+            background: #fff;
+            border-radius: 20px;
+            box-shadow: 0 24px 70px rgba(0, 0, 0, .2);
+            overflow: hidden;
+            transform: translateY(12px) scale(.98);
+            transition: transform .2s ease;
+        }
+
+        .payment-dialog-overlay.show .payment-dialog {
+            transform: translateY(0) scale(1);
+        }
+
+        .payment-dialog-header {
+            padding: 28px 24px 20px;
+            text-align: center;
+            background: linear-gradient(180deg, #FFF5EA 0%, #FFFFFF 100%);
+        }
+
+        .payment-dialog-icon {
+            width: 68px;
+            height: 68px;
+            margin: 0 auto 14px;
+            display: grid;
+            place-items: center;
+            border-radius: 50%;
+            background: #FFF0DF;
+            color: var(--primary-dark);
+            font-size: 28px;
+            border: 1px solid #FFE0C2;
+        }
+
+        .payment-dialog-title {
+            font-size: 22px;
+            font-weight: 600;
+            margin: 0;
+            color: var(--text);
+        }
+
+        .payment-dialog-description {
+            color: var(--muted);
+            font-size: 13px;
+            margin: 7px 0 0;
+        }
+
+        .payment-dialog-body {
+            padding: 0 24px 24px;
+        }
+
+        .payment-dialog-total {
+            padding: 20px;
+            margin-bottom: 18px;
+            text-align: center;
+            background: #FFFAF5;
+            border: 1px solid #FFE5CC;
+            border-radius: 14px;
+        }
+
+        .payment-dialog-total-label {
+            font-size: 13px;
+            color: #777;
+            margin-bottom: 5px;
+        }
+
+        .payment-dialog-total-value {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--primary-dark);
+            line-height: 1.3;
+            overflow-wrap: anywhere;
+        }
+
+        .payment-dialog-details {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 22px;
+        }
+
+        .payment-dialog-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 16px;
+            font-size: 13px;
+        }
+
+        .payment-dialog-row span:first-child {
+            color: var(--muted);
+        }
+
+        .payment-dialog-row span:last-child {
+            text-align: right;
+            font-weight: 500;
+            overflow-wrap: anywhere;
+        }
+
+        .payment-dialog-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .payment-dialog-actions .btn {
+            flex: 1;
+            min-height: 50px;
+        }
+
+        .payment-dialog-actions .btn-primary {
+            font-weight: 600;
+        }
+
+        .payment-dialog-actions .btn-primary:disabled {
+            opacity: .6;
+            cursor: wait;
+        }
+
+        @media (max-width: 600px) {
+            .payment-dialog-overlay {
+                padding: 16px;
+            }
+
+            .payment-dialog {
+                max-width: 100%;
+                border-radius: 18px;
+            }
+
+            .payment-dialog-header {
+                padding: 24px 20px 18px;
+            }
+
+            .payment-dialog-body {
+                padding: 0 20px 20px;
+            }
+
+            .payment-dialog-total-value {
+                font-size: 28px;
+            }
+        }
+
+        @media (max-width: 1000px) {
+            .layout {
+                grid-template-columns: 1fr;
+            }
+
+            .summary-panel {
+                order: -1;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .topbar {
+                padding: 0 16px;
+                height: 64px;
+            }
+
+            .topbar-right .user-label {
+                display: none;
+            }
+
+            .page {
+                padding: 20px 14px 30px;
+            }
+
+            .page-heading {
+                flex-direction: column;
+            }
+
+            h1 {
+                font-size: 24px;
+            }
+
+            .panel-body {
+                padding: 16px;
+            }
+
+            .items {
+                padding: 6px 16px;
+            }
+
+            .summary {
+                padding: 16px;
+            }
+
+            .payment-methods {
+                gap: 10px;
+            }
+
+            .method {
+                padding: 14px;
+                min-height: 112px;
+            }
+
+            .method.active {
+                padding: 13px;
+            }
+
+            .change-value {
+                font-size: 21px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header class="topbar">
+        <div class="brand">
+            <img src="images/logo.png" alt="ตำกระฉูด" class="brand-logo"
+                 onerror="this.style.display='none'">
+            <div>
+                <div class="brand-name">ตำ<span>กระฉูด</span></div>
+                <div class="brand-subtitle">RESTAURANT POS</div>
+            </div>
+        </div>
+
+        <div class="topbar-right">
+            <span class="user-label"><i class="fa-regular fa-user"></i> พนักงานขาย</span>
+            <button class="icon-btn" type="button" onclick="goBack()" title="กลับ">
+                <i class="fa-solid fa-arrow-left"></i>
+            </button>
+        </div>
+    </header>
+
+    <main class="page">
+        <div class="page-heading">
+            <div>
+                <div class="eyebrow">Payment</div>
+                <h1>ชำระเงิน</h1>
+                <p class="description">ตรวจสอบยอดและเลือกวิธีชำระเงินก่อนปิดโต๊ะ</p>
+            </div>
+
+            <div class="table-badge">
+                <i class="fa-solid fa-utensils"></i>
+                <span id="tableName">โต๊ะ —</span>
+            </div>
+        </div>
+
+        <div class="layout">
+            <section class="panel">
+                <div class="panel-header">
+                    <div class="panel-title">วิธีการชำระเงิน</div>
+                    <div class="panel-subtitle">เลือกช่องทางที่ลูกค้าต้องการ</div>
+                </div>
+
+                <div class="panel-body">
+                    <div class="section-label">ช่องทางชำระเงิน</div>
+
+                    <div class="payment-methods">
+                        <button class="method active" type="button" data-method="cash" onclick="selectMethod('cash')">
+                            <i class="fa-solid fa-circle-check method-check"></i>
+                            <div class="method-icon"><i class="fa-solid fa-money-bill-wave"></i></div>
+                            <div class="method-title">เงินสด</div>
+                            <div class="method-desc">รับเงินสดจากลูกค้า</div>
+                        </button>
+
+                        <button class="method" type="button" data-method="transfer" onclick="selectMethod('transfer')">
+                            <i class="fa-solid fa-circle-check method-check"></i>
+                            <div class="method-icon"><i class="fa-solid fa-qrcode"></i></div>
+                            <div class="method-title">โอนเงิน / QR</div>
+                            <div class="method-desc">Mobile Banking หรือ QR Payment</div>
+                        </button>
+                    </div>
+
+                    <div id="cashSection">
+                        <label class="form-label" for="receivedAmount">จำนวนเงินที่รับ</label>
+
+                        <div class="money-input-wrap">
+                            <span class="currency">฿</span>
+                            <input id="receivedAmount" class="money-input"
+                                   type="number" min="0" step="0.01"
+                                   placeholder="0.00" inputmode="decimal"
+                                   oninput="updateChange()">
+                        </div>
+
+                        <div class="quick-amounts">
+                            <button class="quick-btn exact" type="button" onclick="setExactAmount()">ยอดพอดี</button>
+                            <button class="quick-btn" type="button" onclick="addQuickAmount(20)">+20</button>
+                            <button class="quick-btn" type="button" onclick="addQuickAmount(50)">+50</button>
+                            <button class="quick-btn" type="button" onclick="addQuickAmount(100)">+100</button>
+                            <button class="quick-btn" type="button" onclick="addQuickAmount(500)">+500</button>
+                            <button class="quick-btn" type="button" onclick="addQuickAmount(1000)">+1,000</button>
+                        </div>
+
+                        <div class="change-box" id="changeBox">
+                            <div>
+                                <div class="change-label">เงินทอน</div>
+                                <div style="font-size:11px;color:#7B9C8B;margin-top:3px" id="changeHint">
+                                    คำนวณจากเงินที่รับ
+                                </div>
+                            </div>
+                            <div class="change-value" id="changeAmount">฿0.00</div>
+                        </div>
+                    </div>
+
+                    <div id="transferSection" class="transfer-panel">
+                        <div class="section-label" style="text-align:center">รับชำระด้วยการโอนเงิน</div>
+                        <div class="qr-placeholder">
+                            <div>
+                                <i class="fa-solid fa-qrcode"></i>
+                                <div>พื้นที่แสดง QR Code</div>
+                                <small>สำหรับ Prototype</small>
+                            </div>
+                        </div>
+                        <div class="transfer-note">
+                            กรุณาตรวจสอบยอดเงินที่ได้รับจริงก่อนยืนยันการชำระเงิน
+                        </div>
+                    </div>
+
+                    <div class="footer-actions">
+                        <button class="btn btn-secondary" type="button" onclick="goBack()">
+                            <i class="fa-solid fa-arrow-left"></i> กลับ
+                        </button>
+                        <button class="btn btn-primary" id="confirmButton" type="button" onclick="confirmPayment()">
+                            <i class="fa-solid fa-check"></i> ยืนยันชำระเงิน
+                        </button>
+                    </div>
+
+                    <div class="security-note">
+                        <i class="fa-solid fa-shield-halved"></i>
+                        กรุณาตรวจสอบยอดเงินก่อนยืนยันทุกครั้ง
+                    </div>
+                </div>
+            </section>
+
+            <aside class="panel summary-panel">
+                <div class="panel-header">
+                    <div class="order-summary-header">
+                        <div>
+                            <div class="panel-title">สรุปรายการ</div>
+                            <div class="panel-subtitle" id="itemCount">0 รายการ</div>
+                        </div>
+                        <div class="order-number" id="orderNumber">ORDER —</div>
+                    </div>
+                </div>
+
+                <div class="items" id="orderItems">
+                    <div class="empty-state">
+                        <i class="fa-solid fa-receipt"></i>
+                        <div>กำลังโหลดรายการ...</div>
+                    </div>
+                </div>
+
+                <div class="summary">
+                    <div class="summary-row">
+                        <span>รวมรายการอาหาร</span>
+                        <span id="subtotal">฿0.00</span>
+                    </div>
+                    <div class="summary-row">
+                        <span>ส่วนลด</span>
+                        <span id="discount">฿0.00</span>
+                    </div>
+                    <div class="summary-row">
+                        <span>ค่าบริการ / อื่น ๆ</span>
+                        <span id="extraCharge">฿0.00</span>
+                    </div>
+                    <div class="summary-row total">
+                        <span>ยอดชำระสุทธิ</span>
+                        <span id="grandTotal">฿0.00</span>
+                    </div>
+                </div>
+            </aside>
+        </div>
+    </main>
+
+    <div class="toast" id="toast"></div>
+
+    <!-- Payment Confirmation Dialog -->
+    <div class="payment-dialog-overlay" id="paymentDialogOverlay"
+        role="dialog" aria-modal="true"
+        aria-labelledby="paymentDialogTitle"
+        aria-hidden="true">
+
+        <div class="payment-dialog">
+            <div class="payment-dialog-header">
+                <div class="payment-dialog-icon">
+                    <i class="fa-solid fa-receipt"></i>
+                </div>
+
+                <h2 class="payment-dialog-title" id="paymentDialogTitle">
+                    ยืนยันการชำระเงิน
+                </h2>
+
+                <p class="payment-dialog-description">
+                    กรุณาตรวจสอบรายละเอียดก่อนยืนยัน
+                </p>
+            </div>
+
+            <div class="payment-dialog-body">
+                <div class="payment-dialog-total">
+                    <div class="payment-dialog-total-label">ยอดชำระสุทธิ</div>
+                    <div class="payment-dialog-total-value" id="dialogGrandTotal">
+                        ฿0.00
+                    </div>
+                </div>
+
+                <div class="payment-dialog-details">
+                    <div class="payment-dialog-row">
+                        <span>โต๊ะ</span>
+                        <span id="dialogTableName">—</span>
+                    </div>
+
+                    <div class="payment-dialog-row">
+                        <span>วิธีชำระเงิน</span>
+                        <span id="dialogPaymentMethod">—</span>
+                    </div>
+
+                    <div class="payment-dialog-row">
+                        <span>รับเงิน</span>
+                        <span id="dialogReceivedAmount">—</span>
+                    </div>
+
+                    <div class="payment-dialog-row">
+                        <span>เงินทอน</span>
+                        <span id="dialogChangeAmount">—</span>
+                    </div>
+                </div>
+
+                <div class="payment-dialog-actions">
+                    <button type="button" class="btn btn-secondary"
+                            id="cancelPaymentDialogBtn"
+                            onclick="closePaymentDialog()">
+                        ยกเลิก
+                    </button>
+
+                    <button type="button" class="btn btn-primary"
+                            id="confirmPaymentDialogBtn"
+                            onclick="processPayment()">
+                        <i class="fa-solid fa-check"></i>
+                        ยืนยันชำระเงิน
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const TABLE_STORAGE_KEY = 'tumkrachud_pos_tables_v1';
+        const ORDER_STORAGE_KEY = 'tumkrachud_pos_orders_v1';
+        const PAYMENT_STORAGE_KEY = 'tumkrachud_pos_payments_v1';
+
+        let currentTableId = null;
+        let currentOrder = null;
+        let currentMethod = 'cash';
+        let grandTotal = 0;
+
+        function formatMoney(value) {
+            return new Intl.NumberFormat('th-TH', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            }).format(Number(value) || 0);
+        }
+
+        function money(value) {
+            return '฿' + formatMoney(value);
+        }
+
+        function getJson(key, fallback) {
+            try {
+                const value = localStorage.getItem(key);
+                return value ? JSON.parse(value) : fallback;
+            } catch (error) {
+                console.error('Cannot read localStorage:', key, error);
+                return fallback;
+            }
+        }
+
+        function getTableIdFromUrl() {
+            const params = new URLSearchParams(window.location.search);
+            return params.get('tableId') || params.get('id');
+        }
+
+        function getCurrentOrder(orders, tableId) {
+            if (Array.isArray(orders)) {
+                return orders.find(order =>
+                    String(order.tableId ?? order.table_id ?? order.table ?? '') === String(tableId)
+                );
+            }
+
+            if (orders && typeof orders === 'object') {
+                return orders[tableId] || Object.values(orders).find(order =>
+                    String(order.tableId ?? order.table_id ?? order.table ?? '') === String(tableId)
+                );
+            }
+
+            return null;
+        }
+
+        function getItemName(item) {
+            return item.name || item.menuName || item.productName || item.title || 'รายการอาหาร';
+        }
+
+        function getItemQty(item) {
+            return Number(item.qty ?? item.quantity ?? 1) || 1;
+        }
+
+        function getItemPrice(item) {
+            const qty = getItemQty(item);
+
+            if (item.total !== undefined && item.total !== null) {
+                return Number(item.total) || 0;
+            }
+
+            if (item.subtotal !== undefined && item.subtotal !== null) {
+                return Number(item.subtotal) || 0;
+            }
+
+            return (Number(item.price) || 0) * qty;
+        }
+
+        function getOrderItems(order) {
+            if (!order) return [];
+
+            if (Array.isArray(order.items)) return order.items;
+            if (Array.isArray(order.orderItems)) return order.orderItems;
+            if (Array.isArray(order.details)) return order.details;
+
+            return [];
+        }
+
+        function getTableName(tableId, tables) {
+            const table = Array.isArray(tables)
+                ? tables.find(t => String(t.id) === String(tableId))
+                : null;
+
+            if (!table) return 'โต๊ะ ' + (tableId || '—');
+
+            return table.name || table.tableName || ('โต๊ะ ' + (table.number ?? table.id));
+        }
+
+        function init() {
+            currentTableId = getTableIdFromUrl();
+
+            const tables = getJson(TABLE_STORAGE_KEY, []);
+            const orders = getJson(ORDER_STORAGE_KEY, []);
+            const tableName = getTableName(currentTableId, tables);
+
+            document.getElementById('tableName').textContent = tableName;
+
+            currentOrder = getCurrentOrder(orders, currentTableId);
+
+            if (!currentOrder) {
+                renderEmptyOrder();
+                document.getElementById('confirmButton').disabled = true;
+                showToast('ไม่พบออเดอร์ของโต๊ะนี้ กรุณากลับไปตรวจสอบ', true);
+                return;
+            }
+
+            renderOrder(currentOrder);
+            document.getElementById('receivedAmount').value = grandTotal.toFixed(2);
+            updateChange();
+        }
+
+        function renderOrder(order) {
+            const items = getOrderItems(order);
+            const container = document.getElementById('orderItems');
+
+            if (!items.length) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fa-solid fa-receipt"></i>
+                        <div>ไม่พบรายการอาหารในออเดอร์</div>
+                    </div>`;
+            } else {
+                container.innerHTML = items.map(item => {
+                    const qty = getItemQty(item);
+                    const price = getItemPrice(item);
+
+                    return `
+                        <div class="item">
+                            <div>
+                                <div class="item-name">${escapeHtml(getItemName(item))}</div>
+                                <div class="item-meta">${qty} รายการ × ${money(price / qty)}</div>
+                            </div>
+                            <div class="item-price">${money(price)}</div>
+                        </div>`;
+                }).join('');
+            }
+
+            const subtotal = items.reduce((sum, item) => sum + getItemPrice(item), 0);
+            const discount = Number(order.discount) || 0;
+            const extraCharge = Number(order.extraCharge ?? order.serviceCharge ?? 0) || 0;
+
+            grandTotal = Math.max(0, Number(order.grandTotal ?? order.totalAmount ?? order.total) || (subtotal - discount + extraCharge));
+
+            document.getElementById('itemCount').textContent =
+                items.length + ' รายการอาหาร';
+            document.getElementById('orderNumber').textContent =
+                'ORDER ' + (order.orderNo || order.orderNumber || order.id || '—');
+            document.getElementById('subtotal').textContent = money(subtotal);
+            document.getElementById('discount').textContent = money(discount);
+            document.getElementById('extraCharge').textContent = money(extraCharge);
+            document.getElementById('grandTotal').textContent = money(grandTotal);
+        }
+
+        function renderEmptyOrder() {
+            document.getElementById('orderItems').innerHTML = `
+                <div class="empty-state">
+                    <i class="fa-solid fa-receipt"></i>
+                    <div>ไม่พบข้อมูลออเดอร์</div>
+                    <div style="font-size:11px;margin-top:5px">กลับไปหน้าออเดอร์เพื่อตรวจสอบอีกครั้ง</div>
+                </div>`;
+
+            ['subtotal', 'discount', 'extraCharge', 'grandTotal'].forEach(id => {
+                document.getElementById(id).textContent = money(0);
+            });
+
+            document.getElementById('itemCount').textContent = '0 รายการ';
+        }
+
+        function selectMethod(method) {
+            currentMethod = method;
+
+            document.querySelectorAll('.method').forEach(button => {
+                button.classList.toggle('active', button.dataset.method === method);
+            });
+
+            document.getElementById('cashSection').style.display =
+                method === 'cash' ? 'block' : 'none';
+
+            document.getElementById('transferSection').classList.toggle(
+                'show', method === 'transfer'
+            );
+
+            updateChange();
+        }
+
+        function setExactAmount() {
+            document.getElementById('receivedAmount').value = grandTotal.toFixed(2);
+            updateChange();
+        }
+
+        function addQuickAmount(amount) {
+            const input = document.getElementById('receivedAmount');
+            const current = Number(input.value) || 0;
+
+            input.value = (current + amount).toFixed(2);
+            updateChange();
+        }
+
+        function updateChange() {
+            const received = Number(document.getElementById('receivedAmount').value) || 0;
+            const change = received - grandTotal;
+            const box = document.getElementById('changeBox');
+
+            document.getElementById('changeAmount').textContent =
+                money(Math.max(0, change));
+
+            const insufficient = received < grandTotal;
+
+            box.classList.toggle('insufficient', insufficient);
+            document.getElementById('changeHint').textContent =
+                insufficient ? 'จำนวนเงินยังไม่ครบ' : 'เงินทอนสำหรับลูกค้า';
+
+            const canConfirm = currentMethod === 'transfer' || received >= grandTotal;
+            document.getElementById('confirmButton').disabled =
+                !currentOrder || !canConfirm;
+        }
+
+        function confirmPayment() {
+            if (!currentOrder) {
+                showToast('ไม่พบข้อมูลออเดอร์', true);
+                return;
+            }
+
+            const received = Number(
+                document.getElementById('receivedAmount').value
+            ) || 0;
+
+            if (currentMethod === 'cash' && received < grandTotal) {
+                showToast('จำนวนเงินที่รับยังไม่ครบ', true);
+                return;
+            }
+
+            const tableName = document.getElementById('tableName').textContent;
+            const methodName = currentMethod === 'cash'
+                ? 'เงินสด'
+                : 'โอนเงิน / QR';
+
+            const receivedAmount = currentMethod === 'cash'
+                ? received
+                : grandTotal;
+
+            const changeAmount = currentMethod === 'cash'
+                ? Math.max(0, received - grandTotal)
+                : 0;
+
+            document.getElementById('dialogGrandTotal').textContent =
+                money(grandTotal);
+
+            document.getElementById('dialogTableName').textContent =
+                tableName;
+
+            document.getElementById('dialogPaymentMethod').textContent =
+                methodName;
+
+            document.getElementById('dialogReceivedAmount').textContent =
+                money(receivedAmount);
+
+            document.getElementById('dialogChangeAmount').textContent =
+                money(changeAmount);
+
+            const overlay = document.getElementById('paymentDialogOverlay');
+
+            overlay.classList.add('show');
+            overlay.setAttribute('aria-hidden', 'false');
+
+            document.getElementById('cancelPaymentDialogBtn').focus();
+        }
+
+        function closePaymentDialog() {
+            const overlay = document.getElementById('paymentDialogOverlay');
+
+            overlay.classList.remove('show');
+            overlay.setAttribute('aria-hidden', 'true');
+        }
+
+        function processPayment() {
+            if (!currentOrder) {
+                showToast('ไม่พบข้อมูลออเดอร์', true);
+                closePaymentDialog();
+                return;
+            }
+
+            const received = Number(
+                document.getElementById('receivedAmount').value
+            ) || 0;
+
+            if (currentMethod === 'cash' && received < grandTotal) {
+                closePaymentDialog();
+                showToast('จำนวนเงินที่รับยังไม่ครบ', true);
+                return;
+            }
+
+            const confirmButton = document.getElementById('confirmPaymentDialogBtn');
+            confirmButton.disabled = true;
+            confirmButton.innerHTML =
+                '<i class="fa-solid fa-spinner fa-spin"></i> กำลังบันทึก...';
+
+            try {
+                const payments = getJson(PAYMENT_STORAGE_KEY, []);
+
+                const payment = {
+                    id: 'PAY-' + Date.now(),
+                    tableId: currentTableId,
+                    orderId: currentOrder.id || currentOrder.orderId || null,
+                    amount: grandTotal,
+                    method: currentMethod,
+                    receivedAmount: currentMethod === 'cash' ? received : grandTotal,
+                    change: currentMethod === 'cash'
+                        ? Math.max(0, received - grandTotal)
+                        : 0,
+                    paidAt: new Date().toISOString(),
+                    status: 'paid'
+                };
+
+                payments.push(payment);
+                localStorage.setItem(
+                    PAYMENT_STORAGE_KEY,
+                    JSON.stringify(payments)
+                );
+
+                // Mark order as paid.
+                const orders = getJson(ORDER_STORAGE_KEY, []);
+
+                if (Array.isArray(orders)) {
+                    const index = orders.findIndex(order =>
+                        String(
+                            order.tableId ??
+                            order.table_id ??
+                            order.table ??
+                            ''
+                        ) === String(currentTableId)
+                    );
+
+                    if (index >= 0) {
+                        orders[index].paymentStatus = 'paid';
+                        orders[index].status = 'paid';
+                        orders[index].paidAt = payment.paidAt;
+                        orders[index].paymentMethod = currentMethod;
+                    }
+
+                    localStorage.setItem(
+                        ORDER_STORAGE_KEY,
+                        JSON.stringify(orders)
+                    );
+                } else if (orders && typeof orders === 'object') {
+                    const order = orders[currentTableId];
+
+                    if (order) {
+                        order.paymentStatus = 'paid';
+                        order.status = 'paid';
+                        order.paidAt = payment.paidAt;
+                        order.paymentMethod = currentMethod;
+
+                        localStorage.setItem(
+                            ORDER_STORAGE_KEY,
+                            JSON.stringify(orders)
+                        );
+                    }
+                }
+
+                // Close the table.
+                const tables = getJson(TABLE_STORAGE_KEY, []);
+
+                if (Array.isArray(tables)) {
+                    const table = tables.find(
+                        t => String(t.id) === String(currentTableId)
+                    );
+
+                    if (table) {
+                        table.status = 'free';
+                        table.guests = 0;
+                        table.total = 0;
+                        table.openedAt = null;
+                    }
+
+                    localStorage.setItem(
+                        TABLE_STORAGE_KEY,
+                        JSON.stringify(tables)
+                    );
+                }
+
+                closePaymentDialog();
+                showToast('ชำระเงินเรียบร้อยแล้ว');
+
+                setTimeout(() => {
+                    window.location.href = 'table-management.html';
+                }, 1000);
+
+            } catch (error) {
+                console.error('Payment processing failed:', error);
+
+                confirmButton.disabled = false;
+                confirmButton.innerHTML =
+                    '<i class="fa-solid fa-check"></i> ยืนยันชำระเงิน';
+
+                showToast(
+                    'บันทึกการชำระเงินไม่สำเร็จ กรุณาตรวจสอบข้อมูล',
+                    true
+                );
+            }
+        }
+
+        // ปิด Dialog เมื่อคลิกพื้นที่ด้านนอก
+        document.getElementById('paymentDialogOverlay').addEventListener(
+            'click',
+            function (event) {
+                if (event.target === this) {
+                    closePaymentDialog();
+                }
+            }
+        );
+
+        // ปิด Dialog ด้วยปุ่ม Escape
+        document.addEventListener('keydown', function (event) {
+            if (event.key === 'Escape') {
+                const overlay = document.getElementById('paymentDialogOverlay');
+
+                if (overlay.classList.contains('show')) {
+                    closePaymentDialog();
+                }
+            }
+        });
+
+        function goBack() {
+            if (document.referrer && new URL(document.referrer).origin === window.location.origin) {
+                window.history.back();
+            } else {
+                window.location.href = 'table-management.html';
+            }
+        }
+
+        function escapeHtml(value) {
+            return String(value ?? '').replace(/[&<>"']/g, char => ({
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#39;'
+            })[char]);
+        }
+
+        let toastTimer = null;
+
+        function showToast(message, isError = false) {
+            const toast = document.getElementById('toast');
+
+            toast.textContent = message;
+            toast.classList.toggle('error', isError);
+            toast.classList.add('show');
+
+            clearTimeout(toastTimer);
+            toastTimer = setTimeout(() => toast.classList.remove('show'), 3000);
+        }
+
+        init();
+    </script>
+</body>
+</html>
